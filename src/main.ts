@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
-import {Writable} from 'stream'
+import { Writable } from 'stream'
 
 interface CargoJson {
   reason: string
@@ -50,7 +50,7 @@ async function run(): Promise<void> {
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const dummy_stream = new Writable({
-      write(_chunk, _encoding, _callback) {}
+      write(_chunk, _encoding, _callback) { }
     })
     /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -91,6 +91,10 @@ async function run(): Promise<void> {
         }
       }
     }
+
+    core.info(
+      '\u001b[0m\u001b[1m\u001b[33mwarning\u001b[0m\u001b[0m\u001b[1m: test ascii stuffs here\u001b[0m\n\n'
+    )
 
     await exec.exec('cargo', cargo_arguments, options)
   } catch (error) {
