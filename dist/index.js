@@ -86,6 +86,7 @@ function run() {
                     }
                 }
             };
+            core.error('\u001b[0m\u001b[1m\u001b[33mwarning\u001b[0m\u001b[0m\u001b[1m: test ascii stuffs here\u001b[0m\n\n');
             yield exec.exec('cargo', cargo_arguments, options);
         }
         catch (error) {
