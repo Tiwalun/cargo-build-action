@@ -65,10 +65,20 @@ function run() {
                         const compiler_message = JSON.parse(line);
                         const message = compiler_message.message;
                         if (message.level === 'warning') {
-                            const properties = {
-                                title: message.message
-                            };
-                            core.warning(message.rendered, properties);
+                            for (const span of message.spans) {
+                                // TODO: Multiple primary spans
+                                // TODO: Non-primary spans
+                                if (span.is_primary) {
+                                    const properties = {
+                                        title: message.message,
+                                        startLine: span.line_start,
+                                        endLine: span.line_end,
+                                        startColumn: span.column_start,
+                                        endColumn: span.column_end
+                                    };
+                                    core.warning(message.rendered, properties);
+                                }
+                            }
                         }
                         else {
                             core.debug(`Ignoring compiler message with level ${message.level}`);

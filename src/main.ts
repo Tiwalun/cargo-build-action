@@ -11,10 +11,20 @@ interface RustcDiagnosticCode {
   explanation?: string
 }
 
+interface RustcSpan {
+  file_name: string
+  line_start: number
+  line_end: number
+  column_start: number
+  column_end: number
+  is_primary: boolean
+}
+
 interface RustcMessage {
   message: string
   code: RustcDiagnosticCode
   level: string
+  spans: [RustcSpan]
   rendered: string
 }
 
@@ -61,11 +71,20 @@ async function run(): Promise<void> {
           const message = compiler_message.message
 
           if (message.level === 'warning') {
-            const properties: core.AnnotationProperties = {
-              title: message.message
+            for (const span of message.spans) {
+              // TODO: Multiple primary spans
+              // TODO: Non-primary spans
+              if (span.is_primary) {
+                const properties: core.AnnotationProperties = {
+                  title: message.message,
+                  startLine: span.line_start,
+                  endLine: span.line_end,
+                  startColumn: span.column_start,
+                  endColumn: span.column_end
+                }
+                core.warning(message.rendered, properties)
+              }
             }
-
-            core.warning(message.rendered, properties)
           } else {
             core.debug(`Ignoring compiler message with level ${message.level}`)
           }
