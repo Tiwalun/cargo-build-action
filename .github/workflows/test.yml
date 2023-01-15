@@ -20,7 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: tiwalun/cargo-build-testdata
+          ref: 873cb3e576655a7e9d553a002133f68b47f1d24b
       - uses: ./
         with:
-          command: new
-          arguments: test-bin
+          command: build
+          arguments: --manifest-path=bin_warning/Cargo.toml
