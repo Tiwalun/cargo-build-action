@@ -6,9 +6,16 @@ interface CargoJson {
   reason: string
 }
 
+interface RustcDiagnosticCode {
+  code: string
+  explanation?: string
+}
+
 interface RustcMessage {
   message: string
+  code: RustcDiagnosticCode
   level: string
+  rendered: string
 }
 
 interface CargoCompilerMessage extends CargoJson {
@@ -51,12 +58,16 @@ async function run(): Promise<void> {
         if (cargo_output.reason === 'compiler-message') {
           const compiler_message: CargoCompilerMessage = JSON.parse(line)
 
-          if (compiler_message.message.level === 'warning') {
-            core.warning(compiler_message.message.message)
+          const message = compiler_message.message
+
+          if (message.level === 'warning') {
+            const properties: core.AnnotationProperties = {
+              title: message.message
+            }
+
+            core.warning(message.rendered, properties)
           } else {
-            core.debug(
-              `Ignoring compiler message with level ${compiler_message.message.level}`
-            )
+            core.debug(`Ignoring compiler message with level ${message.level}`)
           }
         }
       }

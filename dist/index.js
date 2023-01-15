@@ -63,11 +63,15 @@ function run() {
                     const cargo_output = JSON.parse(line);
                     if (cargo_output.reason === 'compiler-message') {
                         const compiler_message = JSON.parse(line);
-                        if (compiler_message.message.level === 'warning') {
-                            core.warning(compiler_message.message.message);
+                        const message = compiler_message.message;
+                        if (message.level === 'warning') {
+                            const properties = {
+                                title: message.message
+                            };
+                            core.warning(message.rendered, properties);
                         }
                         else {
-                            core.debug(`Ignoring compiler message with level ${compiler_message.message.level}`);
+                            core.debug(`Ignoring compiler message with level ${message.level}`);
                         }
                     }
                 }
