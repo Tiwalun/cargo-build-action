@@ -29,6 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions-rs/cargo@v1.0.3
+        with:
           command: build
           args: --manifest-path=test_data/bin_ok/Cargo.toml
